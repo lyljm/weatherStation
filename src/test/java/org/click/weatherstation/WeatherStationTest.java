@@ -1,6 +1,7 @@
 package org.click.weatherstation;
 
 import org.click.weatherstation.Sensor.IndoorTemperatureSensor;
+import org.click.weatherstation.Sensor.TemperatureSensor;
 import org.click.weatherstation.monitoring.MonitoringScreen;
 import org.click.weatherstation.observer.Observer;
 import org.click.weatherstation.scheduler.AlarmClock;
@@ -13,12 +14,14 @@ public class WeatherStationTest {
         MonitoringScreen monitoringScreen = new MonitoringScreen();
         // 温度传感器
         IndoorTemperatureSensor indoorTemperatureSensor = new IndoorTemperatureSensor();
-        // 向温度传感器添加订阅者：温度观察适配器
-        indoorTemperatureSensor.addObserver(monitoringScreen.createTempObserver());
+        // 温度传感器桥
+        TemperatureSensor temperatureSensor=new TemperatureSensor(indoorTemperatureSensor);
+        // 向发布者添加观察者
+        temperatureSensor.addObserver(monitoringScreen.createTempObserver());
         // 创建scheduler
         AlarmClock alarmClock=new AlarmClock();
         // 向scheduler中添加监听器
-        alarmClock.wakeEvery(1000, indoorTemperatureSensor.createAdapter());
+        alarmClock.wakeEvery(1000, temperatureSensor.createAdapter());
 
     }
 }
